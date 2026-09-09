@@ -42,7 +42,12 @@ const findUserByName = (name) => {
 
 const findUserById = (id) => {
   return users["users_list"].find((user) => user["id"] === id);
-}
+};
+
+const addUser = (user) => {
+  users["users_list"].push(user);
+  return user;
+};
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -67,6 +72,13 @@ app.get("/users/:id", (req, res) => {
   } else {
     res.send(result);
   }
+});
+
+// Ensure that the POST request is json! (the "Content-Type" header should be set to "application/json")
+app.post("/users", (req, res) => {
+  const userToAdd = req.body;
+  addUser(userToAdd);
+  res.send();
 });
 
 app.listen(port, () => {
