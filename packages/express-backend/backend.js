@@ -22,7 +22,7 @@ const users = {
     {
       id: "yat999",
       name: "Dee",
-      job: "Aspring actress",
+      job: "Aspiring actress",
     },
     {
       id: "zap555",
@@ -85,7 +85,31 @@ app.get("/users/:id", (req, res) => {
 });
 
 
+// Sorry if this is atrocious... I am but a js newbie
+const createId = () => {
+  const char1 = String.fromCharCode(97 + Math.floor(Math.random() * 26));
+  const char2 = String.fromCharCode(97 + Math.floor(Math.random() * 26));
+  const char3 = String.fromCharCode(97 + Math.floor(Math.random() * 26));
+  const num1 = Math.floor(Math.random() * 10);
+  const num2 = Math.floor(Math.random() * 10);
+  const num3 = Math.floor(Math.random() * 10);
+
+  const id = `${char1}${char2}${char3}${num1}${num2}${num3}`;
+  return id;
+}
+
 const addUser = (user) => {
+  if (user["id"] == undefined) {
+    let id = createId();
+    let result = findUserById(id);
+    while (result !== undefined) {
+      id = createId();
+      result = findUserById(id);
+    }
+
+    user["id"] = id;
+  }
+
   users["users_list"].push(user);
   return user;
 };
@@ -93,8 +117,8 @@ const addUser = (user) => {
 // Ensure that the POST request is json! (the "Content-Type" header should be set to "application/json")
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
-  addUser(userToAdd);
-  res.send();
+  const newUser = addUser(userToAdd);
+  res.status(201).send(newUser);
 });
 
 
@@ -116,7 +140,7 @@ app.delete("/users/:id", (req, res) => {
   if (result === undefined) {
     res.status(404).send("Resource not found.");
   } else {
-    res.send(result);
+    res.status(204).send(result);
   }
 });
 

@@ -14,7 +14,7 @@ const characters = [
   },
   {
     name: "Dee",
-    job: "Aspring actress",
+    job: "Aspiring actress",
   },
   {
     name: "Dennis",
@@ -25,16 +25,38 @@ const characters = [
 function MyApp() {
   const [characters, setCharacters] = useState([]);
 
-  function removeOneCharacter(index) {
-    const updated = characters.filter((characters, i) => {
-      return i !== index;
-    });
-    setCharacters(updated);
+  function removeOneCharacter(id) {
+    fetch(`http://localhost:8000/users/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.status === 204) {
+          fetchUsers()
+            .then((res) => res.json())
+            .then((json) => setCharacters(json["users_list"]))
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   function updateList(person) {
     postUser(person)
-      .then(() => setCharacters([...characters, person]))
+      .then((response) => { 
+         if (response.status === 201) {
+           response.json()
+             .then((data) => {
+               setCharacters([...characters, data]);
+             })
+             .catch((error) => {
+               console.log(error);
+             });
+         }
+      })
       .catch((error) => {
         console.log(error);
       });
