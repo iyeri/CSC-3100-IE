@@ -32,6 +32,10 @@ app.get("/users", (req, res) => {
   const name = req.query.name;
   const job = req.query.job;
 
+  /* getUsers() from ./services/user_service.js already handles multi-condition
+     queries, I found no need to individually implement usage of
+     findUserByName() and findUserByJob().
+  */
   userService.getUsers(name, job)
     .then((result) => {
       if (result === undefined) {
